@@ -17,5 +17,6 @@ class Persona extends Model
     protected $table = 'personas';
     protected $primaryKey = 'cedula';
     public $timestamps = false;
+    protected $fillable = ['codelec','venccedula', 'juntareceptora', 'nombre', 'primerapellido', 'segundoapellido'];
     use HasFactory;
 }

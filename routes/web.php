@@ -16,12 +16,22 @@ use App\Http\Controllers\PersonaController;
 |
 */
 
+// Rutas de personas //
 
     Route::get('/dashboard/personas', [PersonaController::class, 'index'])->name('personas.index');
+
+    Route::get('/dashboard/personas/import', [PersonaController::class, 'importView'])->name('personas.importView');
+
+    Route::post('/dashboard/personas/import', [PersonaController::class, 'importData'])->name('personas.importData');
+    
+
+// Ruta debug //
 
     Route::get('/debug', function () {
         return view('info');
     });
+
+// Rutas de inicio y auth //    
     Route::get('/', function () {
         return view('auth.login');
     });

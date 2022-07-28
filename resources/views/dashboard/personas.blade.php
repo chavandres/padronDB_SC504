@@ -11,6 +11,10 @@
     <body>
         <div class="container">
             <h1>Personas Registradas en el Padron</h1>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Importar datos</button>
+                <button type="submit" class="btn btn-primary">Agregar nuevo registro</button>
+            </div>
             <table class="table table-bordered data-table">
                 <thead>
                     <tr>
@@ -34,8 +38,8 @@
 
 @section('css')
     {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}} 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    {{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap5.min.css" rel="stylesheet"> --}}
 
 @stop
 
