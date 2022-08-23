@@ -238,6 +238,11 @@ return [
             'icon' => 'fas fa-fw fa-user',
         ],
         [
+            'text' => 'Tabla de Bitacora',
+            'url'  => 'dashboard/bitacora',
+            'icon' => 'fas fa-fw fa-user-secret', 
+        ],
+        [
             'text' => 'Reportes',
             'url'  => 'dashboard/personas/reports',
             'icon' => 'fas fa-fw fa-chart-pie',

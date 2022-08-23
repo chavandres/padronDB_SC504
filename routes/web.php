@@ -46,7 +46,11 @@ use App\Http\Controllers\PersonaController;
 
 
 
+//Ruta de bitacora
 
+Route::get('/dashboard/bitacora', [PersonaController::class, 'bitacora'])->name('personas.bitacora');
+
+Route::get('/dashboard/bitacora/list', [PersonaController::class, 'bitacoraList'])->name('personas.bitacoraList');
 
 
 

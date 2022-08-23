@@ -283,4 +283,18 @@ class PersonaController extends Controller
         return $datatable->make(true);
 
     }
+
+    public function bitacora()
+    {
+        return view('dashboard.bitacora');
+    }
+
+    public function bitacoraList()
+    {
+        $bitacora = DB::select("SELECT * FROM bitacora");
+
+        $datatable = new Datatables();
+        $datatable = $datatable::of($bitacora);  
+        return $datatable->make(true);
+    }
 }
