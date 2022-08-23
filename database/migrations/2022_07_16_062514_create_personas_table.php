@@ -14,7 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('personas', function (Blueprint $table) {
-            $table->id('Cedula')->unique();
+            $table->increments('id');
+            $table->string('Cedula')->unique();
             $table->foreignId('Codelec');
             $table->string('VencCedula', 8);
             $table->string('JuntaReceptora', 5)->default('00000');

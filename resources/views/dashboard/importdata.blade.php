@@ -28,7 +28,7 @@
         </div>
 
         <div class="card-footer">
-            <button type="submit" class="btn btn-primary">Cargar</button>
+            <button type="submit" class="btn btn-primary" id="sendInput">Cargar</button>
         </div>
     </form>
 
@@ -36,15 +36,27 @@
 
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
 @stop
 
 @section('js')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
         $('input[type="file"]').change(function(e) {
             var fileName = e.target.files[0].name;
             $('.custom-file-label').html(fileName);
         });
     </script>
+    <script>
+        $('#sendInput').click(function(e) {
+            toastr.options.timeOut = 0;
+            toastr.options.extendedTimeOut = 0;
+            toastr.info('Espere por favor...', 'Importacion Iniciada');
+        });
+    </script>
+
+    
+
 
 
 @stop

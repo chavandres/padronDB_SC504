@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Jobs\ProcessCsv;
 use Illuminate\Http\Request;
 use App\Models\Persona;
-use DataTables;
-use DB;
+use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
+use PDO;
 
 class PersonaController extends Controller
 {
@@ -15,23 +16,36 @@ class PersonaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+
+
+     public function index()
+     {
+        return view('dashboard.personas');
+     }
+
+
+     public function getPersonas(Request $request)
     {  
-        $data = Persona::select('*');
-        dd($data);
-         if ($request->ajax()) {
-          
-             $data = Persona::select('*');
-             return Datatables::of($data)
-                 ->addIndexColumn()
-                 ->addColumn('action', function($row){
-                     $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>';
-                     return $btn;
-                 })
-                 ->rawColumns(['action'])
-                 ->make(true);
-         }
-         return view('dashboard.personas');
+        //$data = Persona::select(['cedula','codelec','venccedula','juntareceptora','nombre', 'primerapellido', 'segundoapellido']);
+        //return Datatables::of($data)
+        $datatable = new Datatables();
+        $personas = DB::table('personas')->select(['cedula','codelec','venccedula','juntareceptora','nombre', 'primerapellido', 'segundoapellido']);
+        $datatable = $datatable::of($personas)
+            ->addColumn('action', function($row){
+                $btn = '<a href="/dashboard/personas/'.$row->cedula.'/edit" class="edit btn btn-primary btn-sm">Editar</a>';
+                return $btn;
+            })
+            ->rawColumns(['action'])
+            ->toJson();
+        //ddd($datatable);    
+        return $datatable;
+    }
+
+
+    public function del()
+    {
+        $deleted = DB::delete('delete from personas');
+        return redirect('dashboard/personas');
     }
 
     /**
@@ -39,14 +53,71 @@ class PersonaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // public function create()
-    // {
-    //     return view('dashboard.importdata');
-    // }
+     public function create()
+    {
+        return view('dashboard.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $persona = new Persona();
+
+
+        $persona->cedula = $request->get('inputCedula');
+        $persona->codelec = $request->get('inputCodelec');
+        $persona->venccedula = $request->get('inputVenccedula');
+        $persona->juntareceptora = $request->get('inputJuntaReceptora');
+        $persona->nombre = $request->get('inputNombre');
+        $persona->primerapellido = $request->get('inputPrimerApellido');
+        $persona->segundoapellido = $request->get('inputSegundoApellido');
+
+        $persona->save();
+
+        return redirect('dashboard/personas');
+    }
+
 
     public function importView()
     {
         return view('dashboard.importdata');
+    }
+
+    public function reportsView()
+    {
+        // Top 5 Nombres Mas Comunes //
+        $top5Nombres = DB::select("SELECT padronapp.top5_names FROM dual");    
+  
+        $top5Data = [];
+    
+        foreach($top5Nombres as $nombre) {
+            $top5Data['label'][] = $nombre->nombre;
+            $top5Data['data'][] = (int) $nombre->total;
+        }
+    
+        $top5Data['data'] = json_encode($top5Data);
+
+        // Top 5 Nombres Menos Comunes //
+
+        $bottom5Nombres = DB::select("SELECT padronapp.bottom5_names FROM dual");
+        $bottom5Data = [];
+    
+        foreach($bottom5Nombres as $nombre) {
+            $bottom5Data['label'][] = $nombre->nombre;
+            $bottom5Data['data'][] = (int) $nombre->total;
+        }
+    
+        $bottom5Data['data'] = json_encode($bottom5Data);
+
+        return view('dashboard.reports')
+            ->with('top5Names', $top5Data['data'])
+            ->with('bottom5Names', $bottom5Data['data']);
+        
     }
 
     public function importData(Request $req)
@@ -87,7 +158,7 @@ class PersonaController extends Controller
             $data = array_map('str_getcsv', file($file));
             $personasArray = [];
             foreach($data as $row) {
-                Persona::updateOrCreate([
+                Persona::firstOrCreate([
                     'cedula' => $row[0]
                 ], [
                     'codelec' => $row[1],
@@ -104,20 +175,6 @@ class PersonaController extends Controller
 
          }
         return redirect('dashboard/personas')->with('status','Datos importados correctamente.');
-        
-
-    }
-
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
@@ -137,31 +194,80 @@ class PersonaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($cedula)
     {
-        //
+        $persona = Persona::where('cedula', $cedula)->get();
+        //return $persona;
+        return view('dashboard.edit')->with('persona', $persona);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  string  $cedula
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $cedula)
     {
-        //
+        $persona = Persona::where('cedula', $cedula)->get()->first();
+
+        $persona->codelec = $request->get('inputCodelec');
+        $persona->venccedula = $request->get('inputVenccedula');
+        $persona->juntareceptora = $request->get('inputJuntaReceptora');
+        $persona->nombre = $request->get('inputNombre');
+        $persona->primerapellido = $request->get('inputPrimerApellido');
+        $persona->segundoapellido = $request->get('inputSegundoApellido');
+        
+        $persona->save();
+
+        return redirect('dashboard/personas');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  string  $cedula
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($cedula)
     {
-        //
+        $persona = Persona::where('cedula', $cedula)->get()->first();
+        $persona->delete();
+
+        return redirect('/dashboard/personas');
+    }
+
+    public function searchView()
+    {
+        return view('dashboard.consultas');
+    }
+
+    public function searchQuery(Request $request)
+    {
+        $searchCedula = $request->get('formData')['1']['value'];
+        $searchNombre = $request->get('formData')['2']['value'];
+        $searchApe1 = $request->get('formData')['3']['value'];
+        $searchApe2 = $request->get('formData')['4']['value'];
+        
+        $searchResults = DB::select("select consulta_persona('".$searchCedula."','".$searchNombre."','".$searchApe1."','".$searchApe2."') from dual");
+        $datatable = new Datatables();
+        $datatable = $datatable::of($searchResults)
+            ->addColumn('action', function($row){
+                $btn = '<a href="/dashboard/personas/'.$row->cedula.'/edit" class="edit btn btn-primary btn-sm">Editar</a>';
+                return $btn;
+            })
+            ->rawColumns(['action']);  
+        return $datatable->make(true);
+    }
+
+    public function vowels()
+    {
+        $vowels = DB::select("SELECT padronapp.nombresVocales FROM dual");
+
+        $datatable = new Datatables();
+        $datatable = $datatable::of($vowels);  
+        return $datatable->make(true);
+
     }
 }

@@ -198,6 +198,7 @@ return [
         App\Providers\JetstreamServiceProvider::class,
 
         Yajra\Oci8\Oci8ServiceProvider::class,
+        Yajra\DataTables\DataTablesServiceProvider::class,
 
     ],
 

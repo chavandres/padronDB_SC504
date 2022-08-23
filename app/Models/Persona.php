@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-//use Yajra\Oci8\Eloquent\OracleEloquent as Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,8 +14,7 @@ class Persona extends Model
      * @var string
      */
     protected $table = 'personas';
-    protected $primaryKey = 'cedula';
     public $timestamps = false;
-    protected $fillable = ['codelec','venccedula', 'juntareceptora', 'nombre', 'primerapellido', 'segundoapellido'];
+    protected $fillable = ['cedula','codelec','venccedula', 'juntareceptora', 'nombre', 'primerapellido', 'segundoapellido'];
     use HasFactory;
 }

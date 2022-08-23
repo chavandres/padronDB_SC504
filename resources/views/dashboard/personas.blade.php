@@ -1,21 +1,20 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Base de Datos - Padron Electoral')
 
 @section('content_header')
-    <h1>Padron Electoral</h1>
+    <h1>Personas Registradas en el Padron Electoral</h1>
 @stop
 
 @section('content')
 
     <body>
         <div class="container">
-            <h1>Personas Registradas en el Padron</h1>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary">Importar datos</button>
-                <button type="submit" class="btn btn-primary">Agregar nuevo registro</button>
+                <button onclick="window.location.href='/dashboard/personas/import';" class="btn btn-primary">Importar datos</button>
+                <button onclick="window.location.href='/dashboard/personas/create';" class="btn btn-primary">Agregar nuevo registro</button>
             </div>
-            <table class="table table-bordered data-table">
+            <table class="table table-bordered yajra-datatable" id="yajra-datatable">
                 <thead>
                     <tr>
                         <th>Cedula</th>
@@ -25,7 +24,7 @@
                         <th>Nombre</th>
                         <th>Primer Apellido</th>
                         <th>Segundo Apellido</th>
-                        <th width="100px">Accion</th>
+                        <th>Accion</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,9 +36,6 @@
 @stop
 
 @section('css')
-    {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}} 
-    {{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap5.min.css" rel="stylesheet"> --}}
 
 @stop
 
@@ -54,12 +50,23 @@
 
     <script type="text/javascript">
         $(function() {
-            var table = $('.data-table').DataTable({
+            var table = $('#yajra-datatable').DataTable();
+            
+            
+            table.clear();
+            table.destroy();
+            
+
+            //2nd empty html
+            $('#yajra-datatable' + " tbody").empty();
+
+            table = $('#yajra-datatable').DataTable({
 
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('personas.index') }}",
-                columns: [{data: 'cedula', name: 'cedula'},
+                ajax: "{{ route('personas.list') }}",
+                columns: [
+                    {data: 'cedula', name: 'cedula'},
                     {data: 'codelec', name: 'codelec'},
                     {data: 'venccedula', name: 'venccedula'},
                     {data: 'juntareceptora', name: 'juntareceptora'},
