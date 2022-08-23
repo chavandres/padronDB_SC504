@@ -114,9 +114,22 @@ class PersonaController extends Controller
     
         $bottom5Data['data'] = json_encode($bottom5Data);
 
+        // Top 5 Cantones con Mas Electores //
+
+        $cantones = DB::select("SELECT padronapp.topcantones FROM dual");
+        $cantonesData = [];
+    
+        foreach($cantones as $canton) {
+            $cantonesData['label'][] = $canton->canton;
+            $cantonesData['data'][] = (int) $canton->total;
+        }
+    
+        $cantonesData['data'] = json_encode($cantonesData);
+
         return view('dashboard.reports')
             ->with('top5Names', $top5Data['data'])
-            ->with('bottom5Names', $bottom5Data['data']);
+            ->with('bottom5Names', $bottom5Data['data'])
+            ->with('cantones', $cantonesData['data']);
         
     }
 

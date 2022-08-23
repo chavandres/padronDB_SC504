@@ -21,7 +21,7 @@
                     <input type="text" class="form-control form-control-sm" id="searchApellido1" name="searchApellido1" style="width: 15%; display: inline;">
                     <label for="searchApellido2">Segundo Apellido:</label>
                     <input type="text" class="form-control form-control-sm" id="searchApellido2" name="searchApellido2" style="width: 15%; display: inline;">
-                    <div class="card-footer" style="padding: .75rem 0;">
+                    <div class="form-group" style="padding: .75rem 0;">
                         <button type="submit" class="btn btn-primary" id="sendQuery">Buscar</button>
                     </div>
                 </form>    

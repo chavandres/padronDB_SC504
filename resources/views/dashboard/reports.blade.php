@@ -7,28 +7,42 @@
 @stop
 
 @section('content')
-    <div class="chart-container" style="display: flex; flex-flow: row wrap;">
-        <div class="pie-chart-container" style="width: 50%; position: relative;">
-            <canvas id="topNombres"></canvas>
-        </div>
-        <div class="pie-chart-container" style="width: 50%; position: relative;">
-          <canvas id="bottomNombres"></canvas>
+<div style="display: flex; flex-wrap: wrap;">
+    <div class="card" style="width: 48%; height: auto; margin: 1rem;">
+      <h5 class="card-header" style="font-weight: bold;">Top 5 Nombres Mas Comunes</h5>
+      <div class="pie-chart-container">
+        <canvas id="topNombres"></canvas>
       </div>
     </div>
 
-    <div class="container" style="padding: 1.5rem;">
-      <h5>Nombres con 5 vocales diferentes:</h5>
-      <table class="table table-bordered yajra-datatable"  id="yajra-datatable">
-          <thead>
-              <tr>
-                  <th>Nombre</th>
-                  <th>Total</th>
-              </tr>
-          </thead>
-          <tbody>
-          </tbody>
-      </table>
+  <div class="card" style="width: 48%; height: auto; margin: 1rem;">
+    <h5 class="card-header" style="font-weight: bold;">Top 5 Nombres Menos Comunes</h5>
+    <div class="pie-chart-container">
+      <canvas id="bottomNombres"></canvas>
+    </div>
   </div>
+        
+  <div class="card" style="width: 48%; height: auto; margin: 1rem;">
+    <h5 class="card-header" style="font-weight: bold;">Top 5 Cantones con Mayor Cantidad de Personas Inscritas</h5>
+      <div class="bar-chart-container">
+        <canvas id="cantones"></canvas>
+      </div>
+  </div>    
+
+  <div class="card" style="width: 48%; height: auto; margin: 1rem;">
+    <h5 class="card-header" style="font-weight: bold;">Nombres con 5 Vocales Diferentes</h5>
+        <table class="table table-bordered yajra-datatable"  id="yajra-datatable">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
 @stop
 
 @section('css')
@@ -89,9 +103,6 @@
           title: {
             display: true,
             position: "top",
-            text: "Top 5 Nombres Mas Comunes",
-            fontSize: 18,
-            fontColor: "#111"
           },
           legend: {
             display: true,
@@ -152,13 +163,7 @@
       //options
       var options = {
         responsive: true,
-        title: {
-          display: true,
-          position: "top",
-          text: "Top 5 Nombres Menos Comunes",
-          fontSize: 18,
-          fontColor: "#111"
-        },
+        title: {display: true},
         legend: {
           display: true,
           position: "bottom",
@@ -172,6 +177,63 @@
       //create Pie Chart class object
       const chart1 = new Chart(ctx, {
         type: "pie",
+        data: data,
+        options: options
+      });
+ 
+  });
+</script>
+
+<script>
+  $(document).ready(function(){
+      //get the Bar chart canvas
+      const cData = JSON.parse(`<?php echo $cantones; ?>`);
+      var ctx = $("#cantones");
+ 
+      //Bar chart data
+      var data = {
+        labels: cData.label,
+        datasets: [
+          {
+            data: cData.data,
+            backgroundColor: [
+              "#DEB887",
+              "#A9A9A9",
+              "#DC143C",
+              "#F4A460",
+              "#2E8B57",
+              "#1D7A46",
+              "#CDA776",
+            ],
+            borderColor: [
+              "#CDA776",
+              "#989898",
+              "#CB252B",
+              "#E39371",
+              "#1D7A46",
+              "#F4A460",
+              "#CDA776",
+            ],
+            borderWidth: [1, 1, 1, 1, 1,1,1]
+          }
+        ]
+      };
+ 
+      //options
+      var options = {
+        responsive: true,
+        title: {
+          display: true,
+          position: "top",
+        },
+        legend: {
+          display: false
+        }
+      };
+ 
+      //create Bar Chart class object
+      const chart1 = new Chart(ctx, {
+        type: "bar",
         data: data,
         options: options
       });
@@ -196,6 +258,7 @@
               {data: 'total', name: 'total'},
           ],
           searching: false,
+          lengthChange: false,
           order: [[1, 'desc']],
       });
   });
